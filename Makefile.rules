@@ -3,7 +3,7 @@ ifneq ($(V),1)
 Q		:= @
 endif
 
-RASPPI	?= 3
+RASPPI	?= 0
 PREFIX	?= arm-none-eabi-
 
 CC	= $(PREFIX)gcc
@@ -13,13 +13,13 @@ LD	= $(PREFIX)ld
 AR	= $(PREFIX)ar
 
 ifeq ($(strip $(RASPPI)),0)
-ARCH	?= -march=armv6zk -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -DRPIZERO=1 -DEXPERIMENTALZERO=1
+ARCH	?= -march=armv6zk -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -DRPIZERO=1 -DEXPERIMENTALZERO=1 -DTAPESUPPORT=1
 CFLAGS	+= -DRPIZERO=1 -DRASPPI=1
 else ifeq ($(strip $(RASPPI)),1)
 ARCH	?= -march=armv6zk -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -DRPIBPLUS=1
 CFLAGS	+= -DRPIBPLUS=1 -DRASPPI=1
 else ifeq ($(strip $(RASPPI)),2)
-ARCH	?= -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -marm -DRPI2=1
+ARCH	?= -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -marm -DRPI2=1 -DEXPERIMENTALZERO=1
 CFLAGS	+= -DRPI2=1
 else ifeq ($(strip $(RASPPI)),3)
 ARCH	?= -march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -marm -DRPI3=1
@@ -29,7 +29,7 @@ $(error RASPPI must be one of: 0, 1, 2, 3)
 endif
 
 AFLAGS	 += $(ARCH)
-CFLAGS	 += $(ARCH) -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-psabi -fsigned-char -fno-builtin -Ofast -DNDEBUG
+CFLAGS	 += $(ARCH) -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-psabi -fsigned-char -fno-builtin -Ofast -DNDEBUG -fgcse-sm -fgcse-las
 CPPFLAGS := $(CFLAGS) $(CPPFLAGS) -fno-exceptions -fno-rtti -std=c++0x -Wno-write-strings
 CFLAGS	 += -fno-delete-null-pointer-checks -fdata-sections -ffunction-sections -u _printf_float -std=gnu99
 

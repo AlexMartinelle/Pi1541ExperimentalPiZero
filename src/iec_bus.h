@@ -111,7 +111,13 @@ enum PIGPIO
 	PIGPIO_IN_ATN = 24,		// 18
 	PIGPIO_IN_DATA = 25,	// 22
 	PIGPIO_IN_CLOCK = 26,	// 37
-	PIGPIO_IN_BUTTON1 = 27	// 13 Common
+	PIGPIO_IN_BUTTON1 = 27,	// 13 Common
+#if defined(TAPESUPPORT)
+	PIGPIO_IN_DATASETTE_MOTOR = 9,
+	PIGPIO_OUT_DATASETTE_READ = 11,
+	PIGPIO_IN_DATASETTE_WRITE = 8,
+	PIGPIO_OUT_DATASETTE_SENSE = 7,
+#endif
 };
 
 enum PIGPIOMasks
@@ -275,6 +281,12 @@ public:
 			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_OUT_CLOCK, FS_OUTPUT);
 			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_OUT_DATA, FS_OUTPUT);
 			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_OUT_SRQ, FS_OUTPUT);
+#if defined(TAPESUPPORT)
+			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_IN_DATASETTE_MOTOR, FS_INPUT);
+			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_IN_DATASETTE_WRITE, FS_INPUT);
+			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_OUT_DATASETTE_READ, FS_OUTPUT);
+			RPI_SetGpioPinFunction((rpi_gpio_pin_t)PIGPIO_OUT_DATASETTE_SENSE, FS_OUTPUT);
+#endif
 		}
 	
 #if not defined(EXPERIMENTALZERO)
@@ -316,7 +328,13 @@ public:
 		SRQSetToOut = IEC_Bus::invertIECInputs;
 		RefreshOuts1581();
 	}
-
+#if defined(TAPESUPPORT)
+	static inline unsigned ReadGPIO()
+	{
+		gplev0 = read32(ARM_GPIO_GPLEV0);
+		return gplev0;
+	}
+#endif
 #if defined(EXPERIMENTALZERO)
 	static inline bool AnyButtonPressed()
 	{
@@ -571,6 +589,11 @@ public:
 
 	static bool OutputLED;
 	static bool OutputSound;
+
+	static u32 PIGPIO_MASK_IN_DATASETTE_MOTOR;
+	static u32 PIGPIO_MASK_OUT_DATASETTE_READ;
+	static u32 PIGPIO_MASK_IN_DATASETTE_WRITE;
+	static u32 PIGPIO_MASK_OUT_DATASETTE_SENSE;
 
 private:
 	static u32 oldClears;

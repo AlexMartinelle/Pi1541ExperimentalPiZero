@@ -78,7 +78,7 @@ public:
 	SSD1306(int BSCMaster = 1, u8 address = 0x3C, unsigned width = 128, unsigned height = 64, int flip = 0, LCD_MODEL type=LCD_UNKNOWN);
 
 	void PlotCharacter(bool useCBMFont, bool petscii, int x, int y, char ascii, bool inverse);
-	void PlotText(bool useCBMFont, bool petscii, int x, int y, char* str, bool inverse);
+	void PlotText(bool useCBMFont, bool petscii, int x, int y, const char* str, bool inverse);
 
 	void InitHardware();
 	void DisplayOn();

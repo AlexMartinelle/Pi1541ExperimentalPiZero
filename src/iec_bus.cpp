@@ -29,6 +29,12 @@ u32 IEC_Bus::PIGPIO_MASK_IN_DATA = 1 << PIGPIO_DATA;
 u32 IEC_Bus::PIGPIO_MASK_IN_CLOCK = 1 << PIGPIO_CLOCK;
 u32 IEC_Bus::PIGPIO_MASK_IN_SRQ = 1 << PIGPIO_SRQ;
 u32 IEC_Bus::PIGPIO_MASK_IN_RESET = 1 << PIGPIO_RESET;
+#if defined(TAPESUPPORT)
+u32 IEC_Bus::PIGPIO_MASK_IN_DATASETTE_MOTOR = 1 << PIGPIO_IN_DATASETTE_MOTOR;
+u32 IEC_Bus::PIGPIO_MASK_OUT_DATASETTE_READ = 1 << PIGPIO_OUT_DATASETTE_READ;
+u32 IEC_Bus::PIGPIO_MASK_IN_DATASETTE_WRITE = 1 << PIGPIO_IN_DATASETTE_WRITE;
+u32 IEC_Bus::PIGPIO_MASK_OUT_DATASETTE_SENSE = 1 << PIGPIO_OUT_DATASETTE_SENSE;
+#endif
 
 bool IEC_Bus::PI_Atn = false;
 bool IEC_Bus::PI_Data = false;
@@ -339,14 +345,23 @@ void IEC_Bus::RefreshOuts1541(void)
 	if (OutputSound) set |= 1 << PIGPIO_OUT_SOUND;
 	else clear |= 1 << PIGPIO_OUT_SOUND;
 #endif
+
 	if (oldClears != clear)
 	{
+#if defined(TAPESUPPORT)
+		write32(ARM_GPIO_GPCLR0, clear & ~IEC_Bus::PIGPIO_MASK_OUT_DATASETTE_SENSE);
+#else
 		write32(ARM_GPIO_GPCLR0, clear);
+#endif
 		oldClears = clear;
 	}
 	if (oldSets != set)
 	{
+#if defined(TAPESUPPORT)
+		write32(ARM_GPIO_GPSET0, set | IEC_Bus::PIGPIO_MASK_OUT_DATASETTE_SENSE);
+#else
 		write32(ARM_GPIO_GPSET0, set);
+#endif
 		oldSets = set;
 	}
 }

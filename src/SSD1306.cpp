@@ -256,7 +256,7 @@ void SSD1306::SetVCOMDeselect(u8 value)
 	SendCommand( (value & 7) << 4 );
 }
 
-void SSD1306::PlotText(bool useCBMFont, bool petscii, int x, int y, char* str, bool inverse)
+void SSD1306::PlotText(bool useCBMFont, bool petscii, int x, int y, const char* str, bool inverse)
 {
 // assumes 16 character width
 	int i;

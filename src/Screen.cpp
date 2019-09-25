@@ -294,7 +294,7 @@ void Screen::DrawLineV(u32 x, u32 y1, u32 y2, RGBA colour)
 	}
 }
 
-u32 Screen::PrintText(bool petscii, u32 x, u32 y, char *ptr, RGBA TxtColour, RGBA BkColour, bool measureOnly, u32* width, u32* height)
+u32 Screen::PrintText(bool petscii, u32 x, u32 y, const char *ptr, RGBA TxtColour, RGBA BkColour, bool measureOnly, u32* width, u32* height)
 {
 	int xCursor = x;
 	int yCursor = y;

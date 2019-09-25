@@ -27,6 +27,9 @@
 #include "InputMappings.h"
 #include "stb_image.h"
 #include "Petscii.h"
+#if defined(TAPESUPPORT)
+#include "Datasette.h"
+#endif
 extern "C"
 {
 #include "rpi-gpio.h"
@@ -1133,6 +1136,16 @@ void FileBrowser::UpdateInputFolders()
 			}
 			else // not a directory
 			{
+#if defined(TAPESUPPORT)
+				if (PiDevice::Datasette::IsTapeImageExtension(current->filImage.fname))
+				{
+					selectionsMade = true;
+					lastSelectionName = current->filImage.fname;
+					dirty = true;
+				}
+				else
+				{					
+#endif
 				if (DiskImage::IsDiskImageExtention(current->filImage.fname))
 				{
 					DiskImage::DiskType diskType = DiskImage::GetDiskImageTypeViaExtention(current->filImage.fname);
@@ -1154,6 +1167,9 @@ void FileBrowser::UpdateInputFolders()
 
 					dirty = true;
 				}
+#if defined(TAPESUPPORT)
+				}
+#endif
 			}
 		}
 	}
